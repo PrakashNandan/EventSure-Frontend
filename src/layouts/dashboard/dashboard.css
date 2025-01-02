@@ -1,0 +1,98 @@
+/* General Styles for Pagination */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .pagination-container .limit-input {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+  }
+  
+  .pagination-container .limit-input input {
+    max-width: 100px;
+    font-size: 14px;
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .pagination-container .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .pagination-container .pagination-item {
+    cursor: pointer;
+    margin: 0 5px;
+  }
+  
+  .pagination-container .pagination-link {
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .pagination-container .current-page {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 10px;
+    color: #007bff;
+  }
+  
+  /* Disabled state for pagination buttons */
+  .pagination-container .pagination-item.disabled {
+    cursor: not-allowed;
+  }
+  
+  .pagination-container .pagination-item.disabled .pagination-link {
+    background-color: #ccc;
+  }
+  
+  /* Responsive Design - Adjustments for smaller screens */
+  @media (max-width: 768px) {
+    .pagination-container {
+      flex-direction: column;
+    }
+  
+    .pagination-container .limit-input {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+  
+    .pagination-container .pagination {
+      margin-top: 10px;
+    }
+  
+    .pagination-container .pagination-item {
+      margin: 0 3px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .pagination-container .limit-input input {
+      max-width: 80px;
+      font-size: 12px;
+      padding: 5px;
+    }
+  
+    .pagination-container .pagination-link {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+  
+    .pagination-container .current-page {
+      font-size: 14px;
+    }
+  }
+  
