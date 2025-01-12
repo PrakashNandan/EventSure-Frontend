@@ -67,10 +67,10 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Billing",
+    name: "My Events",
     key: "billing",
     icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
+    route: "/my-events",
     component: <Billing />,
   },
   {

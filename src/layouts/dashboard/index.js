@@ -1,19 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
 import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
@@ -22,18 +6,6 @@ import MDBox from "components/MDBox";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
-import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
-import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
-import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
-
-// Data
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
-import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
-
-// Dashboard components
-import Projects from "layouts/dashboard/components/Projects";
-import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import baseURL from "baseurl";
@@ -55,10 +27,17 @@ import {
   MDBPaginationLink,
   MDBSelect,
   MDBSelectOption,
-  MDBSelectInput
+  MDBSelectInput,
+  
 } from "mdb-react-ui-kit";
 
+import { useNavigate } from "react-router-dom";
+
+
+
 function Dashboard() {
+
+  const navigate = useNavigate();
 
   const [page_number, setPageNumber] = useState(1);
   const [limit, setLimit] = useState(10); // Number of items per page
@@ -77,10 +56,13 @@ function Dashboard() {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         });
-        setEvents(data.events);
-        setTotalPages(data.totalPages);
-        setCurrentPage(data.currentPage);
-        console.log("Total Pages: ", data.totalPages);
+        if (data && data.events) {
+          setEvents(data.events);
+          setTotalPages(data.totalPages);
+          setCurrentPage(data.currentPage);
+        } else {
+          console.error("Data structure is invalid");
+        }
       } catch (error) { 
         console.error("Error fetching data: ", error);
       }
@@ -122,7 +104,7 @@ function Dashboard() {
       {events && events.map((event, index) => (
            <MDBRow style={{ marginBottom: '-1.7rem' }}className="justify-content-center " key={index}>
            <MDBCol md="12" xl="10">
-             <MDBCard className="shadow-0 border rounded-3 mt-5 mb-3">
+             <MDBCard className="shadow-4 border rounded-6 mt-5 mb-2">
                <MDBCardBody>
                  <MDBRow>
                    <MDBCol md="12" lg="3" className="mb-4 mb-lg-0">
@@ -144,34 +126,34 @@ function Dashboard() {
                        </a>
                      </MDBRipple>
                    </MDBCol>
-                   <MDBCol md="6">
-  <h5>{event.name}</h5>
-  <div className="d-flex flex-row align-items-center">
-    <div className="text-danger mb-1 me-2">
-      <MDBIcon fas icon="star" />
-      <MDBIcon fas icon="star" />
-      <MDBIcon fas icon="star" />
-      <MDBIcon fas icon="star" />
-    </div>
-    <span className="rating-count">310</span>
-  </div>
-  <h6 className="mb-1">
-    <MDBIcon fas icon="map-marker-alt" className="me-2 text-black" />
-    <strong>Location:</strong> {event.location}
-  </h6>
-  <h6 className="mb-1">
-    <MDBIcon fas icon="calendar-alt" className="me-2 text-black" />
-    <strong>Date:</strong> {event.date}
-  </h6>
-  <h6 className="mb-1">
-    <MDBIcon fas icon="clock" className="me-2 text-black" />
-    <strong>Time:</strong> {event.time}
-  </h6>
-  {/* Uncomment this section if event descriptions are needed */}
-  {/* <p className="text mb-4 mb-md-0">
-    {event.description}
-  </p> */}
-</MDBCol>
+                                    <MDBCol md="6">
+                    <h5>{event.name}</h5>
+                    <div className="d-flex flex-row align-items-center">
+                      <div className="text-danger mb-1 me-2">
+                        <MDBIcon fas icon="star" />
+                        <MDBIcon fas icon="star" />
+                        <MDBIcon fas icon="star" />
+                        <MDBIcon fas icon="star" />
+                      </div>
+                      <span className="rating-count">310</span>
+                    </div>
+                    <h6 className="mb-1">
+                      <MDBIcon fas icon="map-marker-alt" className="me-2 text-black" />
+                      <strong>Location:</strong> {event.location}
+                    </h6>
+                    <h6 className="mb-1">
+                      <MDBIcon fas icon="calendar-alt" className="me-2 text-black" />
+                      <strong>Date:</strong> {event.date}
+                    </h6>
+                    <h6 className="mb-1">
+                      <MDBIcon fas icon="clock" className="me-2 text-black" />
+                      <strong>Time:</strong> {event.time}
+                    </h6>
+                    {/* Uncomment this section if event descriptions are needed */}
+                    {/* <p className="text mb-4 mb-md-0">
+                      {event.description}
+                    </p> */}
+                  </MDBCol>
 
 
                    <MDBCol
@@ -185,9 +167,9 @@ function Dashboard() {
                          <s>{event.price}</s>
                        </span>
                      </div>
-                     <h6 className="text-success">Free shipping</h6>
+                     <h6 className="text-success">Discount : {event.discount}%</h6>
                      <div className="d-flex flex-column mt-4">
-                       <MDBBtn color="primary" size="sm">
+                       <MDBBtn color="primary" size="sm" onClick={() => navigate(`/event-detail/${event._id}`)}>
                          Details
                        </MDBBtn>
                        <MDBBtn outline color="primary" size="sm" className="mt-2">
@@ -202,10 +184,11 @@ function Dashboard() {
          </MDBRow>
       ))
     }
-        
-  
+
     </MDBContainer>
 
+
+      {/* pagination */}
     <MDBRow className="pagination-container">
   <MDBCol md="auto" className="limit-input">
     <span className="me-2" style={{ fontSize: "16px", fontWeight: "500" }}>Limit:</span>
@@ -254,7 +237,7 @@ function Dashboard() {
       </MDBPaginationItem>
     </MDBPagination>
   </MDBCol>
-</MDBRow>
+    </MDBRow>
 
     </DashboardLayout>
 

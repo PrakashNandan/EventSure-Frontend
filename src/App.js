@@ -45,6 +45,7 @@ import createCache from "@emotion/cache";
 
 // Material Dashboard 2 React routes
 import routes from "routes";
+import EventDetail from "layouts/dashboard/EventDetail";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
@@ -191,7 +192,9 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route path="/event-detail/:eventId" element={<EventDetail />} />
+        {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
+
       </Routes>
     </ThemeProvider>
   );
