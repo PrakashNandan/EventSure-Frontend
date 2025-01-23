@@ -63,6 +63,17 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
   const closeSidenav = () => setMiniSidenav(dispatch, true);
 
+  const handleSignOut = () => { 
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userId");
+
+    window.location.href = "/authentication/sign-in";
+
+  }
+
+
+
+
   useEffect(() => {
     // A function that sets the mini state of the sidenav.
     function handleMiniSidenav() {
@@ -181,15 +192,12 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       <List>{renderRoutes}</List>
       <MDBox p={2} mt="auto">
         <MDButton
-          component="a"
-          href="https://www.creative-tim.com/product/material-dashboard-pro-react"
-          target="_blank"
-          rel="noreferrer"
           variant="gradient"
           color={sidenavColor}
           fullWidth
+          onClick={handleSignOut}
         >
-          upgrade to pro
+          Sign Out
         </MDButton>
       </MDBox>
     </SidenavRoot>

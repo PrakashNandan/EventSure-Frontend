@@ -9,10 +9,9 @@ import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
-import BillingInformation from "layouts/billing/components/BillingInformation";
-import Transactions from "layouts/billing/components/Transactions";
+import MyEventInformation from "layouts/myEvents/components/MyEventInformation";
 
-function Billing() {
+function MyEvents() {
   return (
     <DashboardLayout>
       <DashboardNavbar absolute isMini />
@@ -21,7 +20,7 @@ function Billing() {
         <MDBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={20} md={12}>
-              <BillingInformation />
+              <MyEventInformation />
             </Grid>
           </Grid>
         </MDBox>
@@ -31,4 +30,4 @@ function Billing() {
   );
 }
 
-export default Billing;
+export default MyEvents;

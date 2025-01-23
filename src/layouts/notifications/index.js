@@ -1,19 +1,4 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-import { useState } from "react";
+import { useState, useEffect, use } from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -29,7 +14,14 @@ import MDSnackbar from "components/MDSnackbar";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
+import baseURL from "baseurl";
+import {io} from 'socket.io-client';
+import axios from "axios";
+
+const token = localStorage.getItem("authToken");
+
+const socket = io(`${baseURL}`);
+
 
 function Notifications() {
   const [successSB, setSuccessSB] = useState(false);
@@ -110,6 +102,70 @@ function Notifications() {
     />
   );
 
+
+  // developer
+
+  const [ticketUpdateNotifications, setTicketUpdateNotifications] = useState([]);
+  const [ticketCancleNotifications, setTicketCancleNotifications] = useState([]);
+
+  useEffect(() => {
+    // socket.on('receive-event-message', (data) => {
+    //     console.log("Event Received: ", data);
+    //     alert(data.message);
+
+    //     // Update state with logging
+    //     setTicketUpdateNotifications((prev) => {
+    //         const updated = [...prev, data.message];
+    //         console.log("Updated Notifications:", updated);
+    //         return updated;
+    //     });
+    // });
+
+
+
+    const fetchNotifications = async () => {  
+      try{
+        const res = await axios.get(`${baseURL}/notification`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        console.log("Notifications http: ", res.data);
+        res && res.data && res.data.notifications && res.data.notifications.map((notification) => {
+
+          if(notification.type === "update"){
+            setTicketUpdateNotifications((prev) => {
+              const updated = [...prev, notification.message];
+              return updated;
+            });
+          }else if(notification.type === "delete"){
+            setTicketCancleNotifications((prev) => {
+              const updated = [...prev, notification.message];
+              return updated;
+            });
+          }
+
+
+        });
+      }
+      catch(err){
+        console.log("Error is fetching the notification: ", err);
+      }
+    };
+
+    fetchNotifications();
+
+
+
+    return () => {
+        // Cleanup listener on component unmount
+        socket.off('receive-event-message');
+    };
+}, []);
+
+
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -118,33 +174,25 @@ function Notifications() {
           <Grid item xs={12} lg={8}>
             <Card>
               <MDBox p={2}>
-                <MDTypography variant="h5">Alerts</MDTypography>
+                <MDTypography variant="h5">Notifications</MDTypography>
               </MDBox>
               <MDBox pt={2} px={2}>
-                <MDAlert color="primary" dismissible>
-                  {alertContent("primary")}
-                </MDAlert>
-                <MDAlert color="secondary" dismissible>
-                  {alertContent("secondary")}
-                </MDAlert>
-                <MDAlert color="success" dismissible>
-                  {alertContent("success")}
-                </MDAlert>
-                <MDAlert color="error" dismissible>
-                  {alertContent("error")}
-                </MDAlert>
-                <MDAlert color="warning" dismissible>
-                  {alertContent("warning")}
-                </MDAlert>
-                <MDAlert color="info" dismissible>
-                  {alertContent("info")}
-                </MDAlert>
-                <MDAlert color="light" dismissible>
-                  {alertContent("light")}
-                </MDAlert>
-                <MDAlert color="dark" dismissible>
-                  {alertContent("dark")}
-                </MDAlert>
+
+                {
+                  ticketUpdateNotifications && ticketUpdateNotifications.map((notification, index) => (
+                    <MDAlert key={index} color="info" dismissible>
+                      {notification}
+                    </MDAlert>
+                  ))
+                }{
+                  ticketCancleNotifications && ticketCancleNotifications.map((notification, index) => (
+                    <MDAlert key={index} color="error" dismissible>
+                      {notification}
+                    </MDAlert>
+                  ))
+
+                }
+
               </MDBox>
             </Card>
           </Grid>
@@ -189,7 +237,7 @@ function Notifications() {
           </Grid>
         </Grid>
       </MDBox>
-      <Footer />
+    
     </DashboardLayout>
   );
 }

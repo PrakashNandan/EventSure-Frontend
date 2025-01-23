@@ -9,7 +9,11 @@ import { useMaterialUIController } from "context";
 import axios from "axios";
 import baseURL from "baseurl";
 
-function Bill({ eventId, name, organizerName, location, price, discount, date, time, setFetchAgain }) {
+import {io} from 'socket.io-client';
+
+const socket = io(`${baseURL}`);
+
+function Event({ eventId, name, organizerName, location, price, discount, date, time, setFetchAgain }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
   const [open, setOpen] = useState(false); // State for modal visibility
@@ -43,7 +47,54 @@ function Bill({ eventId, name, organizerName, location, price, discount, date, t
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleCreateNotification = async () => {  
+
+      try{
+        const res = await axios.post(`${baseURL}/notification/create`, {
+          type: "update",
+          message: `Event ${name} has been updated`,
+          eventId: eventId
+        }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+        if (res.status === 201) {
+          console.log("Notification created successfully");
+          console.log(res.data);
+        }
+      }
+      catch (error) {
+        console.error("Error creating notification:", error);
+      }
+  }
+
+  const handleDeleteNotification  = async () => {
+
+
+    try{
+      const res = await axios.post(`${baseURL}/notification/create`, {
+        type: "delete",
+        message: `Event ${name} has been Cancelled`,
+        eventId: eventId
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
+      if (res.status === 201) {
+        console.log("Notification created successfully");
+        console.log(res.data);
+      }
+    }
+    catch (error) {
+      console.error("Error creating notification:", error);
+    }
+
+
+  }
+
+  const handleUpdateSubmit = async () => {
     try {
       const res = await axios.patch(`${baseURL}/event/${eventId}`, formData, {
         headers: {
@@ -54,6 +105,8 @@ function Bill({ eventId, name, organizerName, location, price, discount, date, t
         console.log("Event updated successfully");
         setFetchAgain(true); // Notify parent about the update
         handleClose();
+        handleCreateNotification();
+        socket.emit('event-update-message', {eventId, message:`event ${name} has been updated`});
       }
     } catch (error) {
       console.error("Error updating event:", error);
@@ -69,6 +122,7 @@ function Bill({ eventId, name, organizerName, location, price, discount, date, t
       });
       if (res.status === 200) {
         console.log("Event deleted successfully");
+          handleDeleteNotification();
          setFetchAgain(true)// Notify parent about the deletion
         setConfirmationOpen(false); // Close the confirmation modal
       }
@@ -282,7 +336,7 @@ function Bill({ eventId, name, organizerName, location, price, discount, date, t
           />
 
           {/* Submit Button */}
-          <Button variant="contained" color="primary" onClick={handleSubmit} fullWidth sx={{ mt: 2 }}>
+          <Button variant="contained" color="primary" onClick={handleUpdateSubmit} fullWidth sx={{ mt: 2 }}>
             Update Event
           </Button>
         </Box>
@@ -291,7 +345,7 @@ function Bill({ eventId, name, organizerName, location, price, discount, date, t
   );
 }
 
-Bill.propTypes = {
+Event.propTypes = {
   name: PropTypes.string.isRequired,
   eventId: PropTypes.string.isRequired,
   organizerName: PropTypes.string.isRequired,
@@ -303,4 +357,4 @@ Bill.propTypes = {
   setFetchAgain: PropTypes.func.isRequired,
 };
 
-export default Bill;
+export default Event;

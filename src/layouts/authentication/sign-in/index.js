@@ -51,10 +51,11 @@ function Basic() {
     e.preventDefault();
     try {
       const response = await axios.post(`${baseURL}/auth/login`, { email, password });
-      const { token } = response.data;
+      const { token, userId} = response.data;
 
       // Save the token to localStorage (or a secure cookie if preferred)
       localStorage.setItem("authToken", token);
+      localStorage.setItem("userId", userId);
 
       // Navigate to the dashboard or another protected route
       navigate("/dashboard");

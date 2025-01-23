@@ -33,6 +33,11 @@ import {
 
 import { useNavigate } from "react-router-dom";
 
+import {io} from 'socket.io-client';
+import { SportsHockeyTwoTone } from "@mui/icons-material";
+
+const socket = io(`${baseURL}`);
+
 
 
 function Dashboard() {
@@ -44,6 +49,9 @@ function Dashboard() {
   const [events, setEvents] = useState([]);
   const [totalPages, setTotalPages] = useState(1); // Track total pages
   const [currentPage, setCurrentPage] = useState(1);  
+
+
+
 
   useEffect( () => {
     console.log("useEffect");
@@ -69,6 +77,12 @@ function Dashboard() {
     };
 
     fetchData();
+
+   socket.on('connect', () => {
+    console.log('Connected to server');
+  });
+
+
 
   }, [page_number, limit]);
 
@@ -108,23 +122,30 @@ function Dashboard() {
                <MDBCardBody>
                  <MDBRow>
                    <MDBCol md="12" lg="3" className="mb-4 mb-lg-0">
-                     <MDBRipple
-                       rippleColor="light"
-                       rippleTag="div"
-                       className="bg-image rounded hover-zoom hover-overlay"
-                     >
-                       <MDBCardImage
-                         src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/img%20(4).webp"
-                         fluid
-                         className="w-100"
-                       />
-                       <a href="#!">
-                         <div
-                           className="mask"
-                           style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
-                         ></div>
-                       </a>
-                     </MDBRipple>
+                   <MDBRipple
+                      rippleColor="light"
+                      rippleTag="div"
+                      className="bg-image rounded hover-zoom hover-overlay"
+                    >
+                      <MDBCardImage
+                        src={event.eventPhoto || "https://www.adobe.com/content/dam/www/us/en/events/overview-page/eventshub_evergreen_opengraph_1200x630_2x.jpg"}
+                        fluid
+                        style={{
+                          width: "100%", // Ensure it adapts to the container width
+                          height: "100%", // Set a fixed height or adjust as needed
+                          maxHeight: "175px", // Maximum height
+                          objectFit: "cover", // Ensures the image scales and crops to fit the container
+                        }}
+                        className="w-100"
+                      />
+                      <a href={`/event-detail/${event._id}`}>
+                        <div
+                          className="mask"
+                          style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
+                        ></div>
+                      </a>
+                    </MDBRipple>
+
                    </MDBCol>
                                     <MDBCol md="6">
                     <h5>{event.name}</h5>
@@ -162,7 +183,7 @@ function Dashboard() {
                      className="border-sm-start-none border-start"
                    >
                      <div className="d-flex flex-row align-items-center mb-1">
-                       <h4 className="mb-1 me-1">Rs. {(event.price * (100 - event.discount)) / 100}</h4>
+                       <h4 className="mb-1 me-1">₹ {(event.price * (100 - event.discount)) / 100}</h4>
                        <span className="text-danger">
                          <s>{event.price}</s>
                        </span>
@@ -189,7 +210,7 @@ function Dashboard() {
 
 
       {/* pagination */}
-    <MDBRow className="pagination-container">
+    <MDBRow className="pagination-container" style={{ marginTop: "1.7rem" }}>
   <MDBCol md="auto" className="limit-input">
     <span className="me-2" style={{ fontSize: "16px", fontWeight: "500" }}>Limit:</span>
     <input
