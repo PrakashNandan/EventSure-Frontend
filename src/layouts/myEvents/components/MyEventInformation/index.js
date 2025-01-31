@@ -202,17 +202,20 @@ function MyEventInformation() {
           />
         </Grid>
         <Grid item xs={6}>
-          <TextField
-            label="Date"
-            name="date"
-            type="date"
-            value={formData.date}
-            onChange={handleChange}
-            fullWidth
-            margin="dense"
-            InputLabelProps={{ shrink: true }}
-          />
-        </Grid>
+        <TextField
+          label="Date"
+          name="date"
+          type="date"
+          value={formData.date}
+          onChange={handleChange}
+          fullWidth
+          margin="dense"
+          InputLabelProps={{ shrink: true }}
+          inputProps={{
+            min: new Date().toISOString().split("T")[0], // Disables dates before today
+          }}
+        />
+      </Grid>
         <Grid item xs={6}>
           <TextField
             label="Time"
