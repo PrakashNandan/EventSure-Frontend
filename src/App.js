@@ -198,7 +198,7 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-        <Route path="/authentication/sign-in" element={<SignIn />} />
+        <Route path="/" element={<SignIn />} />
         <Route path="/authentication/sign-up" element={<SignUp/>}/>
         <Route path="/event-detail/:eventId" element={<EventDetail />} />
         <Route path="/checkout" element={<Checkout />} />

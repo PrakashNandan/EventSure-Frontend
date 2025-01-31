@@ -72,7 +72,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     localStorage.removeItem("userId");
 
     // window.location.href = "/authentication/sign-in";
-    navigate("/authentication/sign-in");
+    navigate("/");
 
   }
 

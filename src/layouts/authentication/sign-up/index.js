@@ -52,7 +52,7 @@ function Cover() {
       if (response.status === 200 || response.status === 201) {
         alert("Sign-up successful! Redirecting to sign-in page.");
         // Redirect to sign-in page
-        window.location.href = "/authentication/sign-in";
+        window.location.href = "/";
       }
     } catch (err) {
       setError(err.response?.data?.message || "An error occurred. Please try again.");
@@ -152,7 +152,7 @@ function Cover() {
                 Already have an account?{" "}
                 <MDTypography
                   component={Link}
-                  to="/authentication/sign-in"
+                  to="/"
                   variant="button"
                   color="info"
                   fontWeight="medium"
