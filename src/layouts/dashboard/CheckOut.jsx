@@ -11,14 +11,11 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import baseURL from "baseurl";
-import {io} from 'socket.io-client';
 
 
 function Checkout() {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const socket = io(`${baseURL}`);
 
   const {
     eventId,
@@ -41,19 +38,113 @@ function Checkout() {
       );
 
       if (res.status === 200) {
-        console.log("Payment successful:", res);
-
-         // Emit an event to join the event room
-        // socket.emit('join-event-room', { eventId });
+        console.log("Order created:", res);
 
         alert(`${res.data.message}`);
-        navigate("/dashboard");
+
+        const { razorpayOrderId, razorpayKeyId } = response.data;
+
+        
+
+  
       }
     } catch (error) {
-      console.error("Payment failed:", error);
-      alert("Payment failed. Please try again.");
+      console.error("Razor payment order error :", error);
+      alert("Payment cannt be processed. Please try again.");
     }
   };
+
+
+
+  const handleRazorPayment = async () => {  
+
+      try{
+
+          const userDetails = await axios.get(`${baseURL}/auth/getUserDetails`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+          });
+
+          const {data} = await axios.post(`${baseURL}/ticket/checkout`,
+          { eventId , quantity },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+          });
+
+          
+          console.log("users details : ", userDetails.data);  
+          const {name, email, address} = userDetails.data.user;
+
+          console.log("checkout response : ", data);
+          const {message, razorpayKeyId, razorpayOrderId, ticketId, } = data;
+
+
+
+              // Open Razorpay Checkout
+          const options = {
+            key: razorpayKeyId, 
+            amount: Math.floor(totalPrice)*100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            currency: 'INR',
+            name: eventName,
+            description: 'Test Transaction',
+            order_id: razorpayOrderId,
+            // callback_url: "http://localhost:8000/ticket/verify-payment-book-ticket", // Your success URL backend url
+            handler: async function (response) {
+              try{
+                console.log("Payment successful starting:", response);
+                const {razorpay_payment_id, razorpay_order_id, razorpay_signature} = response;
+                const res = await axios.post(`${baseURL}/ticket/bookticket`, {
+                  razorpay_payment_id,
+                  razorpay_order_id,
+                  razorpay_signature,
+                  ticketId
+                }, {
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+                  },
+                });
+
+                if(res.status === 200){
+                  console.log("Payment successful with status 200:", res);
+                  alert("Payment successful. Your ticket has been booked.");
+                  navigate("/my-tickets");
+                }
+              }
+              catch(error){
+                console.error("Payment failed:", error);
+                alert("Payment failed. Please try again.");
+              }
+            },
+            prefill: {
+              name,
+              email,
+              contact: 1234567890,
+            },
+            theme: {
+              color: '#F37254'
+            },
+          };
+
+          const rzp = new Razorpay(options);
+          rzp.open();
+
+
+      }
+      catch(error){
+        console.error("Payment failed:", error);
+        alert("Payment failed. Please try again.");
+      } 
+
+
+
+
+  }
+
+
+
 
   return (
     <MDBContainer className="py-5" fluid>
@@ -68,10 +159,10 @@ function Checkout() {
                 <strong>Event:</strong> {eventName}
               </MDBTypography>
               <MDBTypography tag="h5" className="mb-3">
-                <strong>Price per Ticket:</strong> ₹{ticketPrice}
+                <strong>Price per Ticket:</strong> ₹{Math.floor(ticketPrice)}
               </MDBTypography>
               <MDBTypography tag="h5" className="mb-3">
-                <strong>Total Price:</strong> ₹{totalPrice}
+                <strong>Total Price:</strong> ₹{Math.floor(totalPrice)}
               </MDBTypography>
               <div className="d-flex justify-content-center mt-4">
                 <MDBBtn
@@ -86,7 +177,7 @@ function Checkout() {
                     letterSpacing: "1px",
                     boxShadow: "0 8px 16px rgba(40, 167, 69, 0.3)",
                   }}
-                  onClick={handlePayment}
+                  onClick={handleRazorPayment}
                 >
                   Confirm Payment
                 </MDBBtn>

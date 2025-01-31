@@ -9,9 +9,7 @@ import { useMaterialUIController } from "context";
 import axios from "axios";
 import baseURL from "baseurl";
 
-import {io} from 'socket.io-client';
 
-const socket = io(`${baseURL}`);
 
 function Event({ eventId, name, organizerName, location, price, discount, date, time, setFetchAgain }) {
   const [controller] = useMaterialUIController();
@@ -106,7 +104,6 @@ function Event({ eventId, name, organizerName, location, price, discount, date, 
         setFetchAgain(true); // Notify parent about the update
         handleClose();
         handleCreateNotification();
-        socket.emit('event-update-message', {eventId, message:`event ${name} has been updated`});
       }
     } catch (error) {
       console.error("Error updating event:", error);

@@ -105,7 +105,7 @@ function EventDetails() {
                 
                 <MDTypography variant="body2" className="mb-2 text-muted">
                   <MDBIcon fas icon="calendar-alt" className="me-2" />
-                  <strong>Date:</strong> {event.date}
+                  <strong>Date:</strong>  {new Date(event.date).toLocaleDateString("en-GB")}
                 </MDTypography>
 
                 <MDTypography variant="body2" className="mb-2 text-muted">

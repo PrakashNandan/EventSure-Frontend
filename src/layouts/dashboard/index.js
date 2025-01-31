@@ -6,7 +6,7 @@ import MDBox from "components/MDBox";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import axios from "axios";
 import baseURL from "baseurl";
 import "./dashboard.css";
@@ -28,15 +28,12 @@ import {
   MDBSelect,
   MDBSelectOption,
   MDBSelectInput,
+  MDBDropdown, MDBDropdownMenu, MDBDropdownToggle, MDBDropdownItem , GridContainer, GridItem
   
 } from "mdb-react-ui-kit";
 
 import { useNavigate } from "react-router-dom";
 
-import {io} from 'socket.io-client';
-import { SportsHockeyTwoTone } from "@mui/icons-material";
-
-const socket = io(`${baseURL}`);
 
 
 
@@ -49,6 +46,8 @@ function Dashboard() {
   const [events, setEvents] = useState([]);
   const [totalPages, setTotalPages] = useState(1); // Track total pages
   const [currentPage, setCurrentPage] = useState(1);  
+  const [allLocations, setAllLocations] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState('');
 
 
 
@@ -59,13 +58,14 @@ function Dashboard() {
 
     const fetchData = async () => {
       try {
-        const {data} = await axios.get(`${baseURL}/event?page_number=${page_number}&limit=${limit}`, {
+        const {data} = await axios.get(`${baseURL}/event?page_number=${page_number}&limit=${limit}&location=${selectedLocation}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         });
         if (data && data.events) {
           setEvents(data.events);
+          setAllLocations(data.allLocations || []);
           setTotalPages(data.totalPages);
           setCurrentPage(data.currentPage);
         } else {
@@ -78,13 +78,8 @@ function Dashboard() {
 
     fetchData();
 
-   socket.on('connect', () => {
-    console.log('Connected to server');
-  });
 
-
-
-  }, [page_number, limit]);
+  }, [page_number, limit, selectedLocation]);
 
    // Handle next page
    const handleNextPage = () => {
@@ -114,6 +109,29 @@ function Dashboard() {
       <DashboardNavbar />
 
       <MDBContainer fluid>
+        
+      
+  
+  <MDBDropdown >
+    <MDBDropdownToggle tag='a' className='btn btn-primary'>
+      Locations
+    </MDBDropdownToggle>
+    <MDBDropdownMenu >
+      <MDBDropdownItem key={1} link onClick={() => setSelectedLocation('')}>
+        All
+      </MDBDropdownItem>
+
+      {allLocations.map((location, index) => (
+        <MDBDropdownItem key={index} link onClick={() => setSelectedLocation(location)}>
+          {location}
+        </MDBDropdownItem>
+      ))}
+    </MDBDropdownMenu>
+  </MDBDropdown>
+
+
+    
+
 
       {events && events.map((event, index) => (
            <MDBRow style={{ marginBottom: '-1.7rem' }}className="justify-content-center " key={index}>
@@ -164,7 +182,7 @@ function Dashboard() {
                     </h6>
                     <h6 className="mb-1">
                       <MDBIcon fas icon="calendar-alt" className="me-2 text-black" />
-                      <strong>Date:</strong> {event.date}
+                      <strong>Date:</strong> {new Date(event.date).toLocaleDateString("en-GB")}
                     </h6>
                     <h6 className="mb-1">
                       <MDBIcon fas icon="clock" className="me-2 text-black" />

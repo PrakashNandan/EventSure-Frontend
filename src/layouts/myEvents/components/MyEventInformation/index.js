@@ -8,6 +8,7 @@ import MDTypography from "components/MDTypography";
 import Event from "layouts/myEvents/components/Event";
 import baseURL from "baseurl";
 import { Grid } from "@mui/material";
+import toast, { Toaster } from 'react-hot-toast';
 
 function MyEventInformation() {
   const [events, setEvents] = useState([]);
@@ -297,7 +298,7 @@ function MyEventInformation() {
     </form>
   </Box>
 </Modal>
-
+          <Toaster />
     </>
   );
 }

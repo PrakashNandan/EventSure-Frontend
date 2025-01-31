@@ -62,6 +62,12 @@
   background-color: #ccc;
 }
 
+.dropdown-menu-right {
+  position: absolute;
+  right: 0;
+  left: auto; /* Ensures it is positioned from the right */
+}
+
 /* Responsive Design - Adjustments for smaller screens */
 @media (max-width: 768px) {
   .pagination-container {

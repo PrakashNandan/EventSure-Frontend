@@ -56,6 +56,9 @@ import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 
 import SignIn from "layouts/authentication/sign-in";
+import SignUp from "layouts/authentication/sign-up";
+import  { Toaster } from 'react-hot-toast';
+
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -195,12 +198,14 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-        <Route path="/" element={<SignIn />} />
+        <Route path="/authentication/sign-in" element={<SignIn />} />
+        <Route path="/authentication/sign-up" element={<SignUp/>}/>
         <Route path="/event-detail/:eventId" element={<EventDetail />} />
         <Route path="/checkout" element={<Checkout />} />
         {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
 
       </Routes>
+      <Toaster />
     </ThemeProvider>
   );
 }

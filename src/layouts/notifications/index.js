@@ -15,12 +15,9 @@ import MDSnackbar from "components/MDSnackbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import baseURL from "baseurl";
-import {io} from 'socket.io-client';
 import axios from "axios";
 
 const token = localStorage.getItem("authToken");
-
-const socket = io(`${baseURL}`);
 
 
 function Notifications() {
@@ -109,19 +106,6 @@ function Notifications() {
   const [ticketCancleNotifications, setTicketCancleNotifications] = useState([]);
 
   useEffect(() => {
-    // socket.on('receive-event-message', (data) => {
-    //     console.log("Event Received: ", data);
-    //     alert(data.message);
-
-    //     // Update state with logging
-    //     setTicketUpdateNotifications((prev) => {
-    //         const updated = [...prev, data.message];
-    //         console.log("Updated Notifications:", updated);
-    //         return updated;
-    //     });
-    // });
-
-
 
     const fetchNotifications = async () => {  
       try{
@@ -157,11 +141,6 @@ function Notifications() {
     fetchNotifications();
 
 
-
-    return () => {
-        // Cleanup listener on component unmount
-        socket.off('receive-event-message');
-    };
 }, []);
 
 

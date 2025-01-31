@@ -47,6 +47,8 @@ import {
   setWhiteSidenav,
 } from "context";
 
+const {useNavigate} = require("react-router-dom");
+
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
@@ -63,11 +65,14 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
   const closeSidenav = () => setMiniSidenav(dispatch, true);
 
+  const navigate = useNavigate();
+
   const handleSignOut = () => { 
     localStorage.removeItem("authToken");
     localStorage.removeItem("userId");
 
-    window.location.href = "/authentication/sign-in";
+    // window.location.href = "/authentication/sign-in";
+    navigate("/authentication/sign-in");
 
   }
 
