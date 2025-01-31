@@ -41,8 +41,8 @@ import baseURL from "baseurl";
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("guest@gmail.com");
+  const [password, setPassword] = useState("abcd");
   const navigate = useNavigate();
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
@@ -64,6 +64,8 @@ function Basic() {
       alert("Invalid credentials. Please try again.");
     }
   };
+
+
 
   return (
     <BasicLayout image={bgImage}>
