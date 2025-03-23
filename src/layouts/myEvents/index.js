@@ -10,6 +10,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 import MyEventInformation from "layouts/myEvents/components/MyEventInformation";
+import PulseLoader  from "react-spinners/PulseLoader";
 
 function MyEvents() {
   return (

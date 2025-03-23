@@ -14,6 +14,7 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 import baseURL from "baseurl";
+import toast, { Toaster } from 'react-hot-toast';
 
 function Cover() {
   // State to store form data and errors
@@ -50,7 +51,7 @@ function Cover() {
       });
 
       if (response.status === 200 || response.status === 201) {
-        alert("Sign-up successful! Redirecting to sign-in page.");
+        toast.success('Sign-UP Successfully done');
         // Redirect to sign-in page
         window.location.href = "/";
       }
@@ -165,6 +166,9 @@ function Cover() {
           </MDBox>
         </MDBox>
       </Card>
+      <Toaster 
+      position="top-right"
+      reverseOrder={false}/>
     </CoverLayout>
   );
 }

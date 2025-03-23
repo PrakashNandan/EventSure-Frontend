@@ -205,7 +205,9 @@ export default function App() {
         {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
 
       </Routes>
-      <Toaster />
+      <Toaster 
+      position="top-right"
+      reverseOrder={false}/>
     </ThemeProvider>
   );
 }

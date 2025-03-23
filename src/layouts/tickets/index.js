@@ -16,6 +16,7 @@ import baseURL from "baseurl";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from "react-router-dom";
+import PulseLoader  from "react-spinners/PulseLoader";
 
 
 function Tickets() {
@@ -23,6 +24,7 @@ function Tickets() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedTicketId, setSelectedTicketId] = useState(null);
   const [selectedEventId, setSelectedEventId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -30,13 +32,16 @@ function Tickets() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const { data } = await axios.get(`${baseURL}/ticket`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         });
+        setLoading(false);
         setTickets(data.tickets);
       } catch (error) {
+        setLoading(false);
         console.error("Error:", error);
       }
     };
@@ -128,6 +133,20 @@ function Tickets() {
                     <th scope="col">Actions</th>
                   </tr>
                 </MDBTableHead>
+
+                {loading && (
+                  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "1rem", margin: "0.5rem" }}>
+                    <PulseLoader 
+                      color="#0388fc"
+                      loading={loading}
+                      size={20}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                  </div>
+                  )}
+
+
                 <MDBTableBody>
                   {tickets.map((ticket, index) => (
                     <tr key={index}>
@@ -163,6 +182,10 @@ function Tickets() {
                   ))}
                 </MDBTableBody>
               </MDBTable>
+
+              
+
+
             </Card>
           </Grid>
         </Grid>

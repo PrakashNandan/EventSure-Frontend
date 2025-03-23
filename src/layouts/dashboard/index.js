@@ -6,7 +6,7 @@ import MDBox from "components/MDBox";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect, CSSProperties } from "react";
 import axios from "axios";
 import baseURL from "baseurl";
 import "./dashboard.css";
@@ -33,6 +33,12 @@ import {
 } from "mdb-react-ui-kit";
 
 import { useNavigate } from "react-router-dom";
+import ClipLoader from "react-spinners/ClipLoader";
+import PulseLoader  from "react-spinners/PulseLoader";
+
+const io = require("socket.io-client");
+
+const socket = io(`${baseURL}`);
 
 
 
@@ -48,7 +54,14 @@ function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);  
   const [allLocations, setAllLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState('');
+  const [loading, setLoading] = useState(false);
 
+
+  const override = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "red",
+  };
 
 
 
@@ -58,11 +71,13 @@ function Dashboard() {
 
     const fetchData = async () => {
       try {
+          setLoading(true);
         const {data} = await axios.get(`${baseURL}/event?page_number=${page_number}&limit=${limit}&location=${selectedLocation}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         });
+        setLoading(false);
         if (data && data.events) {
           setEvents(data.events);
           setAllLocations(data.allLocations || []);
@@ -77,7 +92,6 @@ function Dashboard() {
     };
 
     fetchData();
-
 
   }, [page_number, limit, selectedLocation]);
 
@@ -100,6 +114,12 @@ function Dashboard() {
     setLimit(Number(value));
     setPageNumber(1); // Reset to page 1 when limit changes
   };
+
+
+
+const userId = localStorage.getItem("userId").toString();
+
+socket.emit('registerUser', userId);
 
 
  
@@ -130,6 +150,19 @@ function Dashboard() {
   </MDBDropdown>
 
 
+      
+  {loading && (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center",  height: "73vh" }}>
+      <PulseLoader 
+        color="#0388fc"
+        loading={loading}
+        cssOverride={override}
+        size={20}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      />
+    </div>
+  )}
     
 
 
@@ -222,9 +255,14 @@ function Dashboard() {
            </MDBCol>
          </MDBRow>
       ))
-    }
+      }
 
     </MDBContainer>
+
+
+   
+
+    
 
 
       {/* pagination */}
@@ -277,6 +315,8 @@ function Dashboard() {
     </MDBPagination>
   </MDBCol>
     </MDBRow>
+
+    
 
     </DashboardLayout>
 

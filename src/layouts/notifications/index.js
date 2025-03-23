@@ -16,8 +16,12 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import baseURL from "baseurl";
 import axios from "axios";
+import toast, { Toaster } from 'react-hot-toast';
 
 const token = localStorage.getItem("authToken");
+
+const io = require("socket.io-client");
+const socket = io(`${baseURL}`);  
 
 
 function Notifications() {
@@ -140,6 +144,26 @@ function Notifications() {
 
     fetchNotifications();
 
+    
+    socket.on("eventUpdate", (data) => {
+      console.log("Event updated sockeet : ", data);
+      
+      toast.success(`${data.message}`, {
+        style: {
+          border: '1px solid #004085',  // Blue border
+          padding: '16px',
+          color: '#004085',  // Blue text
+        },
+        iconTheme: {
+          primary: '#004085',  // Primary color for icon
+          secondary: '#E7F1FF',  // Light blue background for icon
+        },
+      });
+
+      
+    });
+
+
 
 }, []);
 
@@ -216,8 +240,11 @@ function Notifications() {
           </Grid>
         </Grid>
       </MDBox>
-    
+      <Toaster 
+      position="top-right"
+      reverseOrder={false}/>
     </DashboardLayout>
+    
   );
 }
 

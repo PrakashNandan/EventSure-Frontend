@@ -9,11 +9,13 @@ import Event from "layouts/myEvents/components/Event";
 import baseURL from "baseurl";
 import { Grid } from "@mui/material";
 import toast, { Toaster } from 'react-hot-toast';
+import PulseLoader  from "react-spinners/PulseLoader";
 
 function MyEventInformation() {
   const [events, setEvents] = useState([]);
   const [fetchAgain, setFetchAgain] = useState(false);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -60,6 +62,8 @@ function MyEventInformation() {
         formDataToSend.append(key, formData[key]);
       }
 
+      setLoading(true);
+
       const response = await axios.post(
         `${baseURL}/event/create`,
         formDataToSend,
@@ -70,6 +74,8 @@ function MyEventInformation() {
           },
         }
       );
+
+      setLoading(false);
       if (response.status === 201) {
         alert("Event created successfully!");
         setFetchAgain(true);
@@ -87,6 +93,7 @@ function MyEventInformation() {
         });
       }
     } catch (error) {
+      setLoading(false);
       console.error("Error creating event:", error);
       alert("Failed to create event. Please try again.");
     }
@@ -95,13 +102,16 @@ function MyEventInformation() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(`${baseURL}/event/getorgevents`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         });
+        setLoading(false);
         setEvents(response.data.events);
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching events:", error);
       }
     };
@@ -141,6 +151,20 @@ function MyEventInformation() {
         </MDBox>
         <MDBox pt={1} pb={2} px={2}>
           <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+
+          {loading && (
+                  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "1rem", margin: "0.5rem" }}>
+                    <PulseLoader 
+                      color="#0388fc"
+                      loading={loading}
+                      size={20}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                  </div>
+            )}
+
+
             {events &&
               events.map((event) => (
                 <Event
@@ -301,7 +325,8 @@ function MyEventInformation() {
     </form>
   </Box>
 </Modal>
-          <Toaster />
+          <Toaster position="top-right"
+  reverseOrder={false}/>
     </>
   );
 }

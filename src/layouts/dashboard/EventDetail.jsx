@@ -21,6 +21,7 @@ import { MDBRow, MDBCol } from "mdb-react-ui-kit";
 import { useNavigate } from "react-router-dom";
 import { Modal, Box, Typography, Button, FormControl, Select, MenuItem, Divider } from "@mui/material";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import PulseLoader  from "react-spinners/PulseLoader";
 
 
 
@@ -30,6 +31,7 @@ function EventDetails() {
   const [event, setEvent] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [ticketQuantity, setTicketQuantity] = useState(1);
+  const [loading, setLoading] = useState(false);  
   const navigate = useNavigate();
 
   const loggedInUserId = localStorage.getItem("userId");
@@ -59,13 +61,16 @@ function EventDetails() {
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(`${baseURL}/event/${eventId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         });
+        setLoading(false);
         setEvent(response.data);
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching event details:", error);
       }
     };
@@ -74,7 +79,16 @@ function EventDetails() {
   }, [eventId]);
 
   if (!event) {
-    return <div>Loading...</div>;
+    return  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "1rem",  height: "100vh" }}>
+        <PulseLoader 
+          color="#0388fc"
+          loading={loading}
+          size={20}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      </div>
+
   }
 
   return (
