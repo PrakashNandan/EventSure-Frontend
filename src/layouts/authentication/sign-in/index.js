@@ -37,13 +37,16 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import baseURL from "baseurl";
+import { jwtDecode } from "jwt-decode";
+import { useRole } from "context/roleContext";
 
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
   const [email, setEmail] = useState("guest@gmail.com");
-  const [password, setPassword] = useState("abcd");
+  const [password, setPassword] = useState("Admin@123");
   const navigate = useNavigate();
+  const { setRole } = useRole(); 
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
@@ -53,12 +56,24 @@ function Basic() {
       const response = await axios.post(`${baseURL}/auth/login`, { email, password });
       const { token, userId} = response.data;
 
+       if(!token){
+        navigate('/');
+      }
+
       // Save the token to localStorage (or a secure cookie if preferred)
       localStorage.setItem("authToken", token);
       localStorage.setItem("userId", userId);
 
-      // Navigate to the dashboard or another protected route
-      navigate("/dashboard");
+     const decodedToken = jwtDecode(token);
+      const role = decodedToken.role;
+
+     setRole(role); // Update the role context
+
+      // Navigate based on role
+      if (role === "admin") navigate("/admin");
+      else if (role === "organizer") navigate("/organizer");
+      else navigate("/dashboard");
+
     } catch (error) {
       console.error("Login failed:", error);
       alert("Invalid credentials. Please try again.");

@@ -36,9 +36,9 @@ import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import PulseLoader  from "react-spinners/PulseLoader";
 
-const io = require("socket.io-client");
+// const io = require("socket.io-client");
 
-const socket = io(`${baseURL}`);
+// const socket = io(`${baseURL}`);
 
 
 
@@ -119,7 +119,7 @@ function Dashboard() {
 
 const userId = localStorage.getItem("userId").toString();
 
-socket.emit('registerUser', userId);
+// socket.emit('registerUser', userId);
 
 
  

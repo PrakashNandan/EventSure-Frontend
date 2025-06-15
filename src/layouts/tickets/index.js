@@ -15,7 +15,7 @@ import axios from "axios";
 import baseURL from "baseurl";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import PulseLoader  from "react-spinners/PulseLoader";
 
 
@@ -28,6 +28,8 @@ function Tickets() {
 
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
+  const location = useLocation();
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,7 +49,7 @@ function Tickets() {
     };
 
     fetchData();
-  }, []);
+  }, [location.pathname]);
 
   const handleMenuOpen = (event, ticketId, eventId) => {
     setAnchorEl(event.currentTarget);
@@ -148,7 +150,7 @@ function Tickets() {
 
 
                 <MDBTableBody>
-                  {tickets.map((ticket, index) => (
+                  {tickets && tickets.map((ticket, index) => (
                     <tr key={index}>
                       <td>
                         <div style={{ paddingLeft: "2rem" }}>

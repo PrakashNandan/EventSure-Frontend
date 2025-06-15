@@ -24,7 +24,7 @@ import { MaterialUIControllerProvider } from "context";
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { RoleProvider } from "./context/roleContext";
 
 const container = document.getElementById("app");
 const root = createRoot(container);
@@ -34,7 +34,9 @@ const root = createRoot(container);
 root.render(
   <BrowserRouter>
     <MaterialUIControllerProvider>
+      <RoleProvider>
       <App />
+      </RoleProvider>
     </MaterialUIControllerProvider>
   </BrowserRouter>
 );

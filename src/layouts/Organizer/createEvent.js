@@ -10,8 +10,9 @@ import baseURL from "baseurl";
 import { Grid } from "@mui/material";
 import toast, { Toaster } from 'react-hot-toast';
 import PulseLoader  from "react-spinners/PulseLoader";
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 
-function MyEventInformation() {
+function CreateEvent() {
   const [events, setEvents] = useState([]);
   const [fetchAgain, setFetchAgain] = useState(false);
   const [open, setOpen] = useState(false);
@@ -99,29 +100,11 @@ function MyEventInformation() {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`${baseURL}/event/getorgevents`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-        });
-        console.log("Fetched events:", response.data.events);
-        setLoading(false);
-        setEvents(response.data.events);
-      } catch (error) {
-        setLoading(false);
-        console.error("Error fetching events:", error);
-      }
-    };
-    fetchData();
-    setFetchAgain(false);
-  }, [fetchAgain]);
+
 
   return (
-    <>
+  
+    <DashboardLayout>
       <MDBox style={{ padding: "1rem" }}>
         <Button
           variant="contained"
@@ -144,47 +127,7 @@ function MyEventInformation() {
           Create an Event
         </Button>
       </MDBox>
-      <Card id="delete-account">
-        <MDBox pt={3} px={2}>
-          <MDTypography variant="h6" fontWeight="medium">
-            My Events
-          </MDTypography>
-        </MDBox>
-        <MDBox pt={1} pb={2} px={2}>
-          <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-
-          {loading && (
-                  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "1rem", margin: "0.5rem" }}>
-                    <PulseLoader 
-                      color="#0388fc"
-                      loading={loading}
-                      size={20}
-                      aria-label="Loading Spinner"
-                      data-testid="loader"
-                    />
-                  </div>
-            )}
-
-
-            {events &&
-              events.map((event) => (
-                <Event
-                  key={event._id}
-                  eventId={event._id}
-                  name={event.name}
-                  organizerName={event.organizerName}
-                  location={event.location}
-                  price={event.price}
-                  discount={event.discount}
-                  date={event.date}
-                  time={event.time}
-
-                  setFetchAgain={setFetchAgain}
-                />
-              ))}
-          </MDBox>
-        </MDBox>
-      </Card>
+   
       <Modal open={open} onClose={handleClose}>
   <Box
     sx={{
@@ -328,8 +271,8 @@ function MyEventInformation() {
 </Modal>
           <Toaster position="top-right"
   reverseOrder={false}/>
-    </>
+    </DashboardLayout>
   );
 }
 
-export default MyEventInformation;
+export default CreateEvent

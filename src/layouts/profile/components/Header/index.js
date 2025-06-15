@@ -135,10 +135,17 @@ function Header({ children }) {
             <MDBox height="100%" mt={0.5} lineHeight={1}>
               <MDTypography variant="h5" fontWeight="medium">
                {userDetails.name}
-              </MDTypography>
+              <br />
+         
               <MDTypography variant="button" color="text" fontWeight="regular">
                {userDetails.email}
               </MDTypography>
+              </MDTypography>
+               <MDTypography variant="button" color="text" fontWeight="medium">
+               Role:  {userDetails.role}
+              </MDTypography>
+
+               
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
@@ -148,6 +155,7 @@ function Header({ children }) {
             <MDTypography variant="button" color="text" fontWeight="medium">
              Pincode:  {userDetails.pincode}
             </MDTypography>
+            
           </Grid>
         </Grid>
         {children}
