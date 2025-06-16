@@ -28,10 +28,12 @@ function Tickets() {
 
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
-  const location = useLocation();
+
+
 
 
   useEffect(() => {
+   
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -49,7 +51,7 @@ function Tickets() {
     };
 
     fetchData();
-  }, [location.pathname]);
+  }, []);
 
   const handleMenuOpen = (event, ticketId, eventId) => {
     setAnchorEl(event.currentTarget);

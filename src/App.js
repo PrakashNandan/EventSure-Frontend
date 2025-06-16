@@ -63,6 +63,7 @@ import ProtectedRoute from "protectedRoutes";
 import { useRole } from "./context/roleContext";
 import getRoutesFunc from "./routes/routes";
 import OrganizerHome from "layouts/Organizer/orgHomePage";
+import eventsureLogo from "assets/images/ES_logo.png";
 
 
 
@@ -204,14 +205,16 @@ export default function App() {
       <CssBaseline />
       {layout === "dashboard" && (
         <>
-          <Sidenav
-            color={sidenavColor}
-            brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="EventSure"
-            routes={routes}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
-          />
+        <Sidenav
+              color={sidenavColor}
+              brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+              brandName="EventSure"
+              routes={routes}
+              onMouseEnter={handleOnMouseEnter}
+              onMouseLeave={handleOnMouseLeave}
+            />
+
+
           <Configurator />
           {configsButton}
         </>

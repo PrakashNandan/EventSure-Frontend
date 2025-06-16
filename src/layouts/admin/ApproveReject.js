@@ -166,10 +166,10 @@ const ManageEventsPage = () => {
             onChange={(e) => handleStatusFilter(e.target.value)}
             label="Status Filter"
           >
-            <MenuItem value="all">🌐 All Events</MenuItem>
-            <MenuItem value="pending">🕒 Pending</MenuItem>
-            <MenuItem value="approved">✅ Approved</MenuItem>
-            <MenuItem value="rejected">❌ Rejected</MenuItem>
+            <MenuItem value="all">All Events</MenuItem>
+            <MenuItem value="pending">Pending</MenuItem>
+            <MenuItem value="approved">Approved</MenuItem>
+            <MenuItem value="rejected">Rejected</MenuItem>
           </Select>
         </FormControl>
 
