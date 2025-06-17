@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Card from "@mui/material/Card";
-import { Modal, Box, TextField, Button } from "@mui/material";
+import { Modal, Box, TextField, Button,CircularProgress } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -185,7 +185,7 @@ function MyEventInformation() {
           </MDBox>
         </MDBox>
       </Card>
-      <Modal open={open} onClose={handleClose}>
+     <Modal open={open} onClose={handleClose}>
   <Box
     sx={{
       position: "absolute",
@@ -199,9 +199,14 @@ function MyEventInformation() {
       borderRadius: "12px",
     }}
   >
-    <MDTypography variant="h6" mb={3} sx={{ textAlign: "center", fontWeight: "bold" }}>
+    <MDTypography
+      variant="h6"
+      mb={3}
+      sx={{ textAlign: "center", fontWeight: "bold" }}
+    >
       Create Event
     </MDTypography>
+
     <form>
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -227,20 +232,20 @@ function MyEventInformation() {
           />
         </Grid>
         <Grid item xs={6}>
-        <TextField
-          label="Date"
-          name="date"
-          type="date"
-          value={formData.date}
-          onChange={handleChange}
-          fullWidth
-          margin="dense"
-          InputLabelProps={{ shrink: true }}
-          inputProps={{
-            min: new Date().toISOString().split("T")[0], // Disables dates before today
-          }}
-        />
-      </Grid>
+          <TextField
+            label="Date"
+            name="date"
+            type="date"
+            value={formData.date}
+            onChange={handleChange}
+            fullWidth
+            margin="dense"
+            InputLabelProps={{ shrink: true }}
+            inputProps={{
+              min: new Date().toISOString().split("T")[0],
+            }}
+          />
+        </Grid>
         <Grid item xs={6}>
           <TextField
             label="Time"
@@ -301,7 +306,12 @@ function MyEventInformation() {
             type="file"
             name="eventPhoto"
             inputProps={{ accept: "image/*" }}
-            onChange={(e) => setFormData((prev) => ({ ...prev, eventPhoto: e.target.files[0] }))}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                eventPhoto: e.target.files[0],
+              }))
+            }
             fullWidth
             margin="dense"
           />
@@ -316,16 +326,44 @@ function MyEventInformation() {
               textTransform: "none",
               fontWeight: "bold",
               borderRadius: "8px",
+              height: "40px",
             }}
             onClick={handleSubmit}
+            disabled={loading}
           >
-            Create
+            {loading ? (
+              <CircularProgress size={24} sx={{ color: "#1976d2" }} /> // Blue spinner
+            ) : (
+              "Create"
+            )}
           </Button>
         </Grid>
       </Grid>
     </form>
+
+    {loading && (
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          bgcolor: "rgba(173, 216, 230, 0.4)", // Light blue overlay
+          zIndex: 10,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: "12px",
+        }}
+      >
+        <CircularProgress sx={{ color: "#1976d2" }} /> {/* Blue spinner */}
+      </Box>
+    )}
   </Box>
 </Modal>
+
+
           <Toaster position="top-right"
   reverseOrder={false}/>
     </>

@@ -64,6 +64,7 @@ import { useRole } from "./context/roleContext";
 import getRoutesFunc from "./routes/routes";
 import OrganizerHome from "layouts/Organizer/orgHomePage";
 import eventsureLogo from "assets/images/ES_logo.png";
+import AdminDashboard from "layouts/admin/AdminDashboard";
 
 
 
@@ -74,9 +75,9 @@ export default function App() {
 
 
   // Wait until role is loaded
-  if (role === null || loading) {
-    return <div>Loading app...</div>; // spinner/loader optional
-  }
+  // if (role === null || loading) {
+  //   return <div>Loading app...</div>; // spinner/loader optional
+  // }
   const routes = getRoutesFunc(role);
 
 
@@ -196,7 +197,7 @@ export default function App() {
         {layout === "vr" && <Configurator />}
         <Routes>
           {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </ThemeProvider>
     </CacheProvider>
@@ -231,12 +232,12 @@ export default function App() {
         } />
         <Route path="/admin" element={
           <ProtectedRoute allowedRoles={['admin',]}>
-            <MyEvents/>
+            <AdminDashboard/>
           </ProtectedRoute>
         } />
         <Route path="/event-detail/:eventId" element={<EventDetail />} />
         <Route path="/checkout" element={<Checkout />} />
-        {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
+        <Route path="*" element={<Navigate to="/" />} />
 
       </Routes>
       <Toaster 
