@@ -15,6 +15,8 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 import baseURL from "baseurl";
 import toast, { Toaster } from 'react-hot-toast';
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+
 
 function Cover() {
   // State to store form data and errors
@@ -24,6 +26,7 @@ function Cover() {
     address: "",
     pincode: "",
     password: "",
+    role:'user', // Default role for sign-up
   });
 
   const [error, setError] = useState("");
@@ -48,6 +51,7 @@ function Cover() {
         address: formData.address,
         pincode: formData.pincode,
         password: formData.password,
+        role: formData.role,
       });
 
       if (response.status === 200 || response.status === 201) {
@@ -68,20 +72,20 @@ function Cover() {
           bgColor="info"
           borderRadius="lg"
           coloredShadow="success"
-          mx={2}
-          mt={-8}
+          mx={1}
+          mt={-11}
           p={3}
           mb={-1}
           textAlign="center"
         >
-          <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
+          <MDTypography variant="h3" fontWeight="medium" color="white" mt={0}>
             SIGN-UP
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
             Enter your details below
           </MDTypography>
         </MDBox>
-        <MDBox pt={4} pb={3} px={3}>
+        <MDBox pt={3} pb={2} px={3}>
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={1}>
               <MDInput
@@ -138,7 +142,36 @@ function Cover() {
                 onChange={handleChange}
               />
             </MDBox>
-            {error && (
+           <MDBox mb={2}>
+            <FormControl fullWidth variant="standard">
+              <InputLabel id="role-label">Role</InputLabel>
+              <Select
+                labelId="role-label"
+                id="role"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+              >
+                {['user', 'organizer'].map((role) => (
+                  <MenuItem
+                    key={role}
+                    value={role}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: '#e3f2fd', // light blue
+                        color: '#1565c0',           // darker blue text
+                      },
+                    }}
+                  >
+                    {role.charAt(0).toUpperCase() + role.slice(1)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            </MDBox>        
+
+
+              {error && (
               <MDTypography color="error" variant="caption" display="block" mt={1}>
                 {error}
               </MDTypography>

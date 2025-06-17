@@ -44,7 +44,7 @@ import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
 // Material Dashboard 2 React routes
-import routes from "routes";
+// import routes from "routes";
 import EventDetail from "layouts/dashboard/EventDetail";
 import Checkout from "layouts/dashboard/CheckOut";
 
@@ -57,10 +57,31 @@ import brandDark from "assets/images/logo-ct-dark.png";
 
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
+import MyEvents from "layouts/myEvents";
 import  { Toaster } from 'react-hot-toast';
+import ProtectedRoute from "protectedRoutes";
+import { useRole } from "./context/roleContext";
+import getRoutesFunc from "./routes/routes";
+import OrganizerHome from "layouts/Organizer/orgHomePage";
+import eventsureLogo from "assets/images/ES_logo.png";
+import AdminDashboard from "layouts/admin/AdminDashboard";
+
+
 
 
 export default function App() {
+
+  const {role, loading} = useRole(); // will return "admin", "user", etc.
+
+
+  // Wait until role is loaded
+  // if (role === null || loading) {
+  //   return <div>Loading app...</div>; // spinner/loader optional
+  // }
+  const routes = getRoutesFunc(role);
+
+
+
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -75,6 +96,8 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+
+  
 
   // Cache for the rtl
   useMemo(() => {
@@ -174,7 +197,7 @@ export default function App() {
         {layout === "vr" && <Configurator />}
         <Routes>
           {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </ThemeProvider>
     </CacheProvider>
@@ -183,14 +206,16 @@ export default function App() {
       <CssBaseline />
       {layout === "dashboard" && (
         <>
-          <Sidenav
-            color={sidenavColor}
-            brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="EventSure"
-            routes={routes}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
-          />
+        <Sidenav
+              color={sidenavColor}
+              brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+              brandName="EventSure"
+              routes={routes}
+              onMouseEnter={handleOnMouseEnter}
+              onMouseLeave={handleOnMouseLeave}
+            />
+
+
           <Configurator />
           {configsButton}
         </>
@@ -200,9 +225,19 @@ export default function App() {
         {getRoutes(routes)}
         <Route path="/" element={<SignIn />} />
         <Route path="/authentication/sign-up" element={<SignUp/>}/>
+        <Route path="/organizer" element={
+          <ProtectedRoute allowedRoles={['organizer',]}>
+            <OrganizerHome/>
+          </ProtectedRoute>
+        } />
+        <Route path="/admin" element={
+          <ProtectedRoute allowedRoles={['admin',]}>
+            <AdminDashboard/>
+          </ProtectedRoute>
+        } />
         <Route path="/event-detail/:eventId" element={<EventDetail />} />
         <Route path="/checkout" element={<Checkout />} />
-        {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
+        <Route path="*" element={<Navigate to="/" />} />
 
       </Routes>
       <Toaster 
